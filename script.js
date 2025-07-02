@@ -1,47 +1,67 @@
-function openCard() {
-  document.querySelector('.card').classList.add('opened');
-}
 
-// Confeti animado
-const canvas = document.getElementById('confetti');
-const ctx = canvas.getContext('2d');
+    let knownDescriptors = []; // Base de rostros
+    let registros = [];        // Lista de registros (nombre + hora)
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+    async function iniciarCamara() {
+      await faceapi.nets.tinyFaceDetector.loadFromUri('./models');
+      await faceapi.nets.faceRecognitionNet.loadFromUri('./models');
+      await faceapi.nets.faceLandmark68Net.loadFromUri('./models');
 
-const confettiCount = 150;
-const confetti = [];
+      const video = document.getElementById('video');
+      navigator.mediaDevices.getUserMedia({ video: {} })
+        .then(stream => video.srcObject = stream)
+        .catch(err => alert("No se pudo acceder a la cámara."));
+    }
 
-for (let i = 0; i < confettiCount; i++) {
-  confetti.push({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 6 + 4,
-    d: Math.random() * confettiCount,
-    color: `hsl(${Math.random() * 360}, 70%, 60%)`,
-    tilt: Math.random() * 10 - 10,
-    tiltAngleIncrement: Math.random() * 0.1 + 0.05,
-    tiltAngle: 0
-  });
-}
+    iniciarCamara();
 
-function drawConfetti() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  confetti.forEach(c => {
-    c.tiltAngle += c.tiltAngleIncrement;
-    c.y += (Math.cos(c.d) + 1 + c.r / 2) / 2;
-    c.x += Math.sin(c.d);
-    c.tilt = Math.sin(c.tiltAngle) * 15;
+    async function registrar() {
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
 
-    ctx.beginPath();
-    ctx.lineWidth = c.r;
-    ctx.strokeStyle = c.color;
-    ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
-    ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
-    ctx.stroke();
-  });
+      if (!nombre || !apellido) {
+        alert("Ingrese nombre y apellido.");
+        return;
+      }
 
-  requestAnimationFrame(drawConfetti);
-}
+      const fullName = `${nombre} ${apellido}`;
 
-drawConfetti();
+      // Validar nombre único
+      if (registros.some(r => r.nombre === fullName)) {
+        alert("Este nombre ya fue registrado.");
+        return;
+      }
+
+      const deteccion = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceDescriptor();
+      if (!deteccion) {
+        alert("No se detectó rostro.");
+        return;
+      }
+
+      const nuevoDescriptor = deteccion.descriptor;
+
+      // Comparar rostro con base registrada
+      for (const item of knownDescriptors) {
+        const distancia = faceapi.euclideanDistance(item.descriptor, nuevoDescriptor);
+        if (distancia < 0.6) {
+          alert("Este rostro ya fue registrado.");
+          return;
+        }
+      }
+
+      // Registrar nuevo rostro
+      knownDescriptors.push({ nombre: fullName, descriptor: nuevoDescriptor });
+
+      // Registrar en log
+      const fecha = new Date().toLocaleString();
+      registros.push({ nombre: fullName, fecha });
+
+      const div = document.createElement("div");
+      div.className = "entry";
+      div.innerHTML = `<strong>${fullName}</strong><br><small>${fecha}</small>`;
+      document.getElementById("registros").appendChild(div);
+
+      document.getElementById("nombre").value = "";
+      document.getElementById("apellido").value = "";
+    }
+  

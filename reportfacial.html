@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro Facial con Validación</title>
+  <script defer src="https://unpkg.com/face-api.js"></script>
+   <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Registro Facial con Validación</h2>
+  <video id="video" width="320" height="240" autoplay muted></video><br>
+  <input type="text" id="nombre" placeholder="Nombre"><br>
+  <input type="text" id="apellido" placeholder="Apellido"><br>
+  <button onclick="registrar()">Registrar</button>
+
+  <div id="log">
+    <h3>Registros:</h3>
+    <div id="registros"></div>
+  </div>
+<script src="script.js"></script>
+  
+</body>
+</html>
