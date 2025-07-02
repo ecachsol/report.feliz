@@ -2,22 +2,127 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Registro Facial con Validación</title>
-  <script defer src="https://unpkg.com/face-api.js"></script>
-   <link rel="stylesheet" href="stylers.css">
+  <title>Asistencia con Captura Facial</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 20px;
+    }
+
+    video, canvas {
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .registro {
+      margin-top: 20px;
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    input {
+      padding: 10px;
+      width: 80%;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin-top: 10px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .asistencias {
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .asistencia-item {
+      margin-top: 10px;
+      padding: 10px;
+      background: #fff;
+      border-left: 5px solid green;
+      border-radius: 5px;
+    }
+
+    .asistencia-item img {
+      height: 60px;
+      border-radius: 8px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body>
-  <h2>Registro Facial con Validación</h2>
-  <video id="video" width="320" height="240" autoplay muted></video><br>
-  <input type="text" id="nombre" placeholder="Nombre"><br>
-  <input type="text" id="apellido" placeholder="Apellido"><br>
-  <button src="/reportfacial.html">ingresar</button>
 
-  <div id="log">
-    <h3>Registros:</h3>
-    <div id="registros"></div>
+  <h2>Registro de Asistencia con Captura Facial</h2>
+
+  <video id="video" width="300" height="220" autoplay></video>
+  <br>
+  <input type="text" id="nombre" placeholder="Ingrese su nombre">
+  <br>
+  <button onclick="registrarAsistencia()">Registrar Asistencia</button>
+
+  <div class="asistencias" id="listaAsistencias">
+    <h3>Asistencias registradas:</h3>
   </div>
-<script src="scriptrs.js"></script>
-  
+
+  <canvas id="canvas" width="300" height="220" style="display: none;"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const lista = document.getElementById('listaAsistencias');
+
+    // Accede a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert("Error al acceder a la cámara: " + err);
+      });
+
+    function registrarAsistencia() {
+      const nombre = document.getElementById("nombre").value.trim();
+      if (nombre === "") {
+        alert("Por favor, ingrese un nombre.");
+        return;
+      }
+
+      // Captura imagen del video
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const imagenData = canvas.toDataURL("image/png");
+
+      // Hora actual
+      const hora = new Date().toLocaleTimeString();
+
+      // Mostrar en lista
+      const div = document.createElement("div");
+      div.className = "asistencia-item";
+      div.innerHTML = `
+        <img src="${imagenData}" alt="Foto de ${nombre}">
+        <strong>${nombre}</strong> - ${hora}
+      `;
+      lista.appendChild(div);
+
+      // Limpiar nombre
+      document.getElementById("nombre").value = "";
+    }
+  </script>
+
 </body>
 </html>
