@@ -2,193 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Muy pronto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html{
-      font-size: 72.5%;
-
-    }
-    body {
-      height: 100vh;
-      background-image: url(fondo.jpg);
-      background-size: auto;
-      animation: gradient 15s ease infinite;
-      font-family: 'Montserrat', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      text-align: center;
-    }
-
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 4rem;
-      color: #fff;
-      text-shadow: 0 0 15px #fff5;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff80ab; }
-      to { text-shadow: 0 0 20px #fff, 0 0 40px #ff4081; }
-    }
-
-    p {
-      color: #000;
-      font-size: 3rem;
-      margin-top: 10px;
-      font-family: 'Times New Roman', Times, serif;
-    }
-
-    .balloon {
-      position: absolute;
-      bottom: -120px;
-      width: 60px;
-      height: 80px;
-      border-radius: 50%;
-      background: pink;
-      opacity: 0.8;
-      animation: floatUp 8s infinite ease-in-out;
-    }
-
-    .balloon::after {
-      content: '';
-      position: absolute;
-      bottom: -25px;
-      left: 50%;
-      width: 2px;
-      height: 25px;
-      background: #444;
-    }
-
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0);
-        opacity: 0;
-      }
-      50% {
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-110vh);
-        opacity: 0;
-      }
-    }
-
-    .confetti {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background-color: #fff;
-      opacity: 0.7;
-      animation: fall 5s linear infinite;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(-10vh) rotate(0deg);
-      }
-      100% {
-        transform: translateY(110vh) rotate(360deg);
-      }
-    }
-
-    footer {
-      position: absolute;
-      bottom: 20px;
-      color: #fff;
-      font-size: 1.5rem;
-      animation: gradient 15s ease infinite;
-      font-family: 'Montserrat', sans-serif;
-    }
-    img {
-      display: flex;
-      flex-direction: row;
-      width:  300px;
-      height: auto;
-      filter: drop-shadow(0 0 20px rgba(0,0,0, .5));
-      border-radius: 5px;
-    }
-      /* article {
-        position: relative;
-        width: 250px;
-        transition: all .3s ease;
-      } */
-      /* article img:first-child{
-        box-shadow: 0 60px 60px -60px rgba(0 ,30, 255,0.5);
-        border-radius: 4px;
-        object-fit: cover;
-        width: 100%;
-      } */
-    footer {
-      font-size: 4rem;
-      color: #fff;
-      text-shadow: 0 0 15px #fff5;
-      animation: glow 2s ease-in-out infinite alternate;
-      
-       @keyframes glow {
-      from { 
-        text-shadow: 0 0 10px #ff80ab, 0 0 20px #ff80ab;
-       }
-      to { 
-        text-shadow: 0 0 20px #fff, 0 0 40px #ff4081;
-       }
-    }
-    }
-  </style>
+  <title>Registro Facial con Validación</title>
+  <script defer src="https://unpkg.com/face-api.js"></script>
+   <link rel="stylesheet" href="stylers.css">
 </head>
 <body>
+  <h2>Registro Facial con Validación</h2>
+  <video id="video" width="320" height="240" autoplay muted></video><br>
+  <input type="text" id="nombre" placeholder="Nombre"><br>
+  <input type="text" id="apellido" placeholder="Apellido"><br>
+  <button src="/reportfacial.html">ingresar</button>
 
-  <h1>🎉 Happy Briday Milagros 🎉</h1>
-  <p>Has Clic en el Imagen💖</p>
-  <article>
-    <a href="invitacion.html">
-  <img src="studio.png" alt="studi">
-  <!-- <img src="fotos/anime.png" alt="igual"> -->
-   </a>
-  </article>
-  <footer>Con cariño</footer>
-
-  <script>
-    // Globos
-    const balloonColors = ['#ff80ab', '#ffd54f', '#4fc3f7', '#81c784', '#ba68c8'];
-    for (let i = 0; i < 15; i++) {
-      let b = document.createElement('div');
-      b.classList.add('balloon');
-      b.style.left = Math.random() * 100 + 'vw';
-      b.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-      b.style.animationDuration = 5 + Math.random() * 5 + 's';
-      document.body.appendChild(b);
-    }
-
-    // Confetti
-    for (let i = 0; i < 80; i++) {
-      let c = document.createElement('div');
-      c.classList.add('confetti');
-      c.style.left = Math.random() * 100 + 'vw';
-      c.style.top = Math.random() * -100 + 'vh';
-      c.style.backgroundColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
-      c.style.animationDuration = 3 + Math.random() * 5 + 's';
-      c.style.opacity = Math.random();
-      document.body.appendChild(c);
-    }
-   
-  </script>
- <button href="reportfacial.html">ingresar</button>
+  <div id="log">
+    <h3>Registros:</h3>
+    <div id="registros"></div>
+  </div>
+<script src="scriptrs.js"></script>
+  
 </body>
 </html>
